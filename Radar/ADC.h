@@ -2,7 +2,6 @@
 #define ADC_h
 
 
-//extern volatile bool arr_filled;
 extern uint8_t const SAMPLE_MAX;
 extern volatile uint16_t data_in[2][128];
 extern volatile uint8_t fill;
@@ -11,8 +10,6 @@ extern volatile uint8_t send_fft;
 void ADCInit()
 {
 	DDRC &= ~(1 << DDC0); //set bit 0 of port c (analog pin 0) to input
-	
-	//Add SREG copy and restore if loop() needs arithmetic operations
   ADCSRB = 0; //Free running mode
   ADMUX |= (0 & 0x07)|    // (using analog pin 0) |
            (1 << REFS0)|  //(use AVcc (5V) for reference voltage) |  
@@ -23,23 +20,8 @@ void ADCInit()
             (1 << ADATE) |  //(enable auto-trigger (free-running mode selected in B)) |
             (1 << ADIE) |   //(enable interrupts when ADC done) |
             (1 << ADEN) |   //(enable ADC) |
-            (1 << ADSC);    //(start ADC)
-                                                                                                                             
- //sei(); //enable global interrupts                                                                  
+            (1 << ADSC);    //(start ADC)                                                               
 }
-
-/*ISR(ADC_vect)
-{
-  static uint8_t samples = 0;
-  data_in[samples] = ADCH;//High 8 bits of ADC result
-  samples++;
-
-  if(samples == SAMPLE_MAX)
-  {
-    samples = 0;
-    arr_filled = true; //flag set in loop()to calculate fft   
-  }
-}*/
 
 ISR(ADC_vect)
 {
@@ -49,16 +31,9 @@ ISR(ADC_vect)
 	samples++;
 	if(samples == SAMPLE_MAX)
 	{
-    send_fft = fill;
-		fill ^= 0x01; //toggle fill to other buffer
-		
-		if(fill == send_fft)
-			ADCSRA &= ~(1 << ADIE); //disable ADC interrupts
-		
-		
-		
+    send_fft = fill; //current fill buffer is ready to be passed to fft
+		fill ^= 0x01; //toggle fill to other buffer		
 		samples = 0;
-
     ADCSRA &= ~(1 << ADIE); //disable ADC interrupts
 	}
 	
