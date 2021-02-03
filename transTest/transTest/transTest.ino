@@ -1,11 +1,3 @@
-/*
-* Arduino Wireless Communication Tutorial
-*     Example 1 - Transmitter Code
-*                
-* by Dejan Nedelkovski, www.HowToMechatronics.com
-* 
-* Library: TMRh20/RF24, https://github.com/tmrh20/RF24/
-*/
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
@@ -18,7 +10,10 @@ void setup() {
   radio.stopListening();
 }
 void loop() {
-  const char text[] = "Hello World";
-  radio.write(&text, sizeof(text));
-  delay(1000);
+  int time = 0;
+  radio.write(&time, sizeof(time));
+  delay(10000);
+  time = 5;
+  radio.write(&time, sizeof(time));
+  delay(10000);
 }
