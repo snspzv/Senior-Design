@@ -16,9 +16,13 @@ void setup() {
   radio.openWritingPipe(address);
   radio.setPALevel(RF24_PA_MIN);
   radio.stopListening();
+  pinMode(4, OUTPUT);
 }
 void loop() {
+  digitalWrite(4, HIGH);
   const char text[] = "Hello World";
   radio.write(&text, sizeof(text));
+  delay(1000);
+  digitalWrite(4, LOW);
   delay(1000);
 }

@@ -15,10 +15,7 @@ void setup() {
 }
 void loop() {
   // Send time value
-  const char text[] = "Hello World";
-  radio.write(&text, sizeof(text));
-  delay(1000);
-  /*int time = 5;
+  int time = 5;
   radio.write(&time, sizeof(time));
-  delay(1000); */
+  delay(1000);
 }

@@ -7,7 +7,6 @@ RF24 radio(7, 8); // CE, CSN
 const byte address[6] = "00001";
 
 // LED Alias
-const int StatusLED = LED_BUILTIN;
 const int WarningLight = 4;
 
 
@@ -20,32 +19,23 @@ void setup() {
   radio.startListening();
 
   //LED Setup
-  pinMode(StatusLED, OUTPUT);
   pinMode(WarningLight, OUTPUT);
 
   // Turn LEDs off on start
-  digitalWrite(StatusLED, LOW);
   digitalWrite(WarningLight, LOW);
 
 }
 void loop() {
-  if (radio.available()) {
-    int time = 0;
-    bool con = 0;
-    
+  int time = 0;
+  
+  if (radio.available()) {    
     // Read from Radio
-    radio.read(&text, sizeof(text));
+    radio.read(&time, sizeof(time));
     
     // Print for debugging
     Serial.println(time);
-
-    // Turn on Status LED to show connection
-    digitalWrite(StatusLED, HIGH);
   }
   else{
-    // Turn off Status LED
-    digitalWrite(StatusLED, LOW);;
-
     while(!radio.available()){
         // Flash Warning Light
       digitalWrite(WarningLight, HIGH);
@@ -53,7 +43,6 @@ void loop() {
       digitalWrite(WarningLight, LOW);
       delay(1000);
     }
-
   }
 
   if(time > 0){
