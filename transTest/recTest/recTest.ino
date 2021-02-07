@@ -15,7 +15,8 @@ void setup() {
   Serial.begin(9600);
   radio.begin();
   radio.openReadingPipe(0, address);
-  radio.setPALevel(RF24_PA_MIN);
+  radio.setPALevel(RF24_PA_LOW);
+  radio.setChannel(108);
   radio.startListening();
 
   //LED Setup
@@ -23,20 +24,31 @@ void setup() {
 
   // Turn LEDs off on start
   digitalWrite(WarningLight, LOW);
-
 }
+
 void loop() {
   int time = 0;
+  bool con = 0;
   
   if (radio.available()) {    
     // Read from Radio
     radio.read(&time, sizeof(time));
+    radio.read(&con, sizeof(con));
     
     // Print for debugging
     Serial.println(time);
+    Serial.println(con);
+
+    // Turn on signal light for length "time"
+    if(time > 0){
+    digitalWrite(WarningLight, HIGH);
+    for (int i = 0; i < time; ++i) { delay(1000); }
+    digitalWrite(WarningLight, LOW);
+  } 
+  else { digitalWrite(WarningLight, LOW); }
   }
-  else{
-    while(!radio.available()){
+  /* else{
+    while(!con){
         // Flash Warning Light
       digitalWrite(WarningLight, HIGH);
       delay(1000);
@@ -44,13 +56,5 @@ void loop() {
       delay(1000);
     }
   }
-
-  if(time > 0){
-    // Turn on signal light for length "time"
-    digitalWrite(WarningLight, HIGH);
-    for (int i = 0; i < time; ++i) { delay(1000); }
-    digitalWrite(WarningLight, LOW);
-  } 
-  else { digitalWrite(WarningLight, LOW); }
-  
+*/  
 }

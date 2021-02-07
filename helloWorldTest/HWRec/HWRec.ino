@@ -15,7 +15,8 @@ void setup() {
   Serial.begin(9600);
   radio.begin();
   radio.openReadingPipe(0, address);
-  radio.setPALevel(RF24_PA_MIN);
+  radio.setPALevel(RF24_PA_HIGH);
+  radio.setChannel(108);
   radio.startListening();
 }
 void loop() {

@@ -10,12 +10,20 @@ void setup() {
   // Radio Set Up
   radio.begin();
   radio.openWritingPipe(address);
-  radio.setPALevel(RF24_PA_MIN);
+  radio.setPALevel(RF24_PA_LOW);
+  radio.setChannel(108);
   radio.stopListening();
 }
 void loop() {
   // Send time value
   int time = 5;
+  bool con = 1;
+  radio.write(&con, sizeof(con));
   radio.write(&time, sizeof(time));
-  delay(1000);
+  delay(5000);
+  time = 0;
+  radio.write(&con, sizeof(con));
+  radio.write(&time, sizeof(time));
+  delay(5000);
+  
 }
