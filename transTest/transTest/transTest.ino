@@ -6,6 +6,14 @@
 RF24 radio(7, 8); // CE, CSN
 const byte address[6] = "00001";
 
+// Data Pack Struct
+struct DataPack{
+  int time;
+  bool con;
+};
+
+DataPack Data;
+
 void setup() {
   // Radio Set Up
   radio.begin();
@@ -16,14 +24,9 @@ void setup() {
 }
 void loop() {
   // Send time value
-  int time = 5;
-  bool con = 1;
-  radio.write(&con, sizeof(con));
-  radio.write(&time, sizeof(time));
-  delay(5000);
-  time = 0;
-  radio.write(&con, sizeof(con));
-  radio.write(&time, sizeof(time));
-  delay(5000);
+  Data.time = 5;
+  Data.con = 1;
+  radio.write(&Data, sizeof(Data));
   
+  delay(1000);  
 }
