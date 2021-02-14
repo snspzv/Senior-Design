@@ -22,4 +22,7 @@
       - `git commit -m "description of changes"`
     - To push to remote repo
       - `git push`
+      
+  - RF24 Library Documentation: https://maniacbug.github.io/RF24/classRF24.html
+  
   
