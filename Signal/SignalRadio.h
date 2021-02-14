@@ -1,3 +1,6 @@
+#ifndef signalradio_h
+#define signalradio_h
+
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
@@ -14,3 +17,5 @@ void RadioSetup() {
   radio.setChannel(108);
   radio.startListening();
 }
+
+#endif /* signalradio_h */
