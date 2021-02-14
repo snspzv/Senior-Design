@@ -18,8 +18,8 @@
   
   - Git
     - To commit changes locally
-      `git add "file1" "file2"`
-      `git commit -m "description of changes"`
+      - `git add "file1" "file2"`
+      - `git commit -m "description of changes"`
     - To push to remote repo
-      `git push`
+      - `git push`
   
