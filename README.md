@@ -14,4 +14,12 @@
     it should signal that a car is approaching.
     - Setup
       1. Add RF24 with Arduino library manager
+      
+  
+  - Git
+    - To commit changes locally
+      `git add "file1" "file2"`
+      `git commit -m "description of changes"`
+    - To push to remote repo
+      `git push`
   
