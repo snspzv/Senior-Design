@@ -5,7 +5,7 @@
     approaching, and transmitting status to the Arduino at the top of the hill.
     - Setup
       1. Add KickFFT with Arduino library manager
-      2. In KickFFT.h, change line 201 to `uint32_t bit = (uint32_t(1) << 30); 
+      2. In KickFFT.h, change line 201 to `uint32_t bit = (uint32_t(1) << 30);` 
       3. Add RF24 with Arduino library manager
     
   
@@ -14,4 +14,12 @@
     it should signal that a car is approaching.
     - Setup
       1. Add RF24 with Arduino library manager
+      
+  
+  - Git
+    - To commit changes locally
+      - `git add "file1" "file2"`
+      - `git commit -m "description of changes"`
+    - To push to remote repo
+      - `git push`
   
