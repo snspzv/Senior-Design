@@ -63,7 +63,14 @@ void loop() {
 //        break;
 //      }
     }
-
+/*
+  radar should determine if a the need to transmit is valid, otherwise just continue to monitor
+  if(movement_detected == true)
+  {
+    transmit_warning(time); //transmit to the other reciever the length of time we need, for right now this is an arbitrary amount 
+  }
+  
+*/
     //Function(s) to evaluate fft results here
         //Some kind of low pass filtering
         //Speed measurement algorithm (may be as simple as selecting highest magnitude of fft)
