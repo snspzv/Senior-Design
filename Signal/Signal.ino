@@ -6,7 +6,7 @@
 #define LIGHT_ON 1
 #define LIGHT_BLINKING 2
 
-volatile uint8_t state = LIGHT_OFF; 
+volatile uint8_t g_state = LIGHT_OFF; 
 
 void setup() {
   // put your setup code here, to run once:
@@ -25,23 +25,23 @@ void loop() {
   
     if(timeOn > 0)
     {
-      if(state == LIGHT_ON)
+      if(g_state == LIGHT_ON)
       {
         restartLightTimer();
       }
   
-      else if((state == LIGHT_OFF) || (state == LIGHT_BLINKING))
+      else if((g_state == LIGHT_OFF) || (g_state == LIGHT_BLINKING))
       {
         lightOnSolid();
         startLightTimer();
-        state = LIGHT_ON;
+        g_state = LIGHT_ON;
       }
     }
   
-    else if ((timeOn == 0) && (state == LIGHT_BLINKING))
+    else if ((timeOn == 0) && (g_state == LIGHT_BLINKING))
     {
       lightOff(); 
-      state = LIGHT_OFF;
+      g_state = LIGHT_OFF;
     }
   }
     

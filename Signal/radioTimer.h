@@ -1,7 +1,7 @@
 #ifndef radiotimer_h
 #define radiotimer_h
 
-extern volatile uint8_t state;
+extern volatile uint8_t g_state;
 
 void initRadioTimer()
 {
@@ -21,6 +21,6 @@ void restartRadioTimer()
 ISR(/*timer interrupt vector*/)
 {
   lightOnBlinking();
-  state = LIGHT_BLINKING;
+  g_state = LIGHT_BLINKING;
 }
 #endif /* radiotimer_h */
