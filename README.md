@@ -5,8 +5,8 @@
     approaching, and transmitting status to the Arduino at the top of the hill.
     - Setup
       - Add arduinoFFT with Arduino library manager 
-        1. Delete arduinoFFT/src/arduinoFFT.h and replace with with https://github.com/snspzv/Senior-Design/blob/main/libReplacements/arduinoFFT.h
-        2. Delete arduinoFFT/src/arduinoFFT.cpp and replace with https://github.com/snspzv/Senior-Design/blob/main/libReplacements/arduinoFFT.cpp
+        1. Delete arduinoFFT/src/arduinoFFT.h and replace it with [this file](libReplacements/arduinoFFT.h)
+        2. Delete arduinoFFT/src/arduinoFFT.cpp and replace it with [this file](libReplacements/arduinoFFT.cpp)
       - Add RF24 with Arduino library manager
     
   
