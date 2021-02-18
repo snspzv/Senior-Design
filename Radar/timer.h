@@ -1,7 +1,7 @@
 #ifndef timer_h
 #define timer_h
 
-extern volatile uint8_t send_fft;
+extern volatile uint8_t calc_fft;
 
 
 void timerInit()
