@@ -26,6 +26,6 @@
       
   - RF24 Library Documentation: https://maniacbug.github.io/RF24/classRF24.html
   
-  - [Signal State Diagram](https://drive.google.com/drive/u/1/folders/1wvsSo1X448O08AieXR7cRK199CmHDZ03)
+  - [Signal State Diagram](https://drive.google.com/file/d/1SXXWFQub_RAO9IWIOhbIvrC0gkTXHe1I/view?usp=sharing)
   
   
