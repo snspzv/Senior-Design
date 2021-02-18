@@ -4,10 +4,10 @@
     - Code for Arduino at the bottom of the hill that will detect cars. Basic functions include reading data from radar module, processing data to determine whether a car is
     approaching, and transmitting status to the Arduino at the top of the hill.
     - Setup
-      1. Add arduinoFFT with Arduino library manager
+      - Add arduinoFFT with Arduino library manager 
         1. Delete arduinoFFT/src/arduinoFFT.h and replace with with https://github.com/snspzv/Senior-Design/blob/main/libReplacements/arduinoFFT.h
         2. Delete arduinoFFT/src/arduinoFFT.cpp and replace with https://github.com/snspzv/Senior-Design/blob/main/libReplacements/arduinoFFT.cpp
-      3. Add RF24 with Arduino library manager
+      - Add RF24 with Arduino library manager
     
   
   - Signal
