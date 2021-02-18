@@ -1,8 +1,6 @@
 #ifndef timer_h
 #define timer_h
 
-extern volatile uint8_t calc_fft;
-
 
 void timerInit()
 {
@@ -38,7 +36,6 @@ ISR(TIMER1_COMPA_vect)
   uint8_t temp = SREG;
   ADCSRA |= (1 << ADIE); //Re-enable ADC interrupts
   stopTimer();
-  //send_fft = 2; //reset access to fft function for next loop
   SREG = temp;
 }
 #endif /* timer_h */

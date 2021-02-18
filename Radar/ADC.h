@@ -4,9 +4,8 @@
 
 extern uint8_t const SAMPLE_MAX;
 extern volatile double data_in[2][128];
-extern volatile uint8_t fill;
+extern volatile uint8_t currently_filling;
 extern volatile uint8_t samples;
-//extern volatile uint8_t count;
 
 void ADCInit()
 {
@@ -32,8 +31,8 @@ ISR(ADC_vect)
   if(samples < 128)
   {
       uint8_t lower = ADCL; //unecessary for 8 bit precision
-      data_in[fill][samples] = (ADCH << 8) | lower;//10 bit precision
-      //data_in[fill][samples] = ADCH; //8 bit precision, must set ADLAR before using
+      data_in[currently_filling][samples] = (ADCH << 8) | lower;//10 bit precision
+      //data_in[currently_filling][samples] = ADCH; //8 bit precision, must set ADLAR before using
       samples++;
   }
 
