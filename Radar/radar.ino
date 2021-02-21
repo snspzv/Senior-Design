@@ -1,10 +1,9 @@
 
 //#include <KickFFT.h> //Go to line 201 and cast l as 32 bit before shifting to avoid error
 
-#include "ADC.h"
-#include "print.h"
+#include "adc.h"
 #include "timer.h"
-#include "arduinoFFT.h"
+#include <arduinoFFT.h>
 #include "processing.h"
 
 uint8_t const SAMPLE_MAX = 128; //Be careful that combined size of data_in and fft_result will not be greater than RAM
