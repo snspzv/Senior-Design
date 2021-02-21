@@ -19,7 +19,7 @@ void RadioSetup() {
 }
 //takes in time variable, for now is arbitrary, and needs to flash for the amount of time
 //sensed from radar.c
-void transmit_warning(const uint8_t time) {
+void transmit(const uint8_t time) {
 
   uint8_t packet_success;
   //write() returns a bool indicating if the ack was rec'd or not, could be useful for error checking 
