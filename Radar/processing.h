@@ -34,13 +34,12 @@ double freqToMPH(double freq)
 
 double freqToMPS(double freq)
 {
-  return (freq * double(0.006061);
+  return (freq * double(0.006061));
 }
 
 double freqToLightTime(double freq)
 {
-  double mps = freqToMPS(freq);
-  
+  return ((double(1) / freqToMPS(freq)) * double(ROAD_DISTANCE));
 }
 
 double dopplerFreq(uint8_t filled)

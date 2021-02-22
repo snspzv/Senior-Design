@@ -28,6 +28,6 @@ void transmit(const uint8_t time) {
   /*if (packet_success)
     {
       send a retry/backup here?    
-    }
-*/
+    }*/
+}
 #endif /* radarradio_h */
