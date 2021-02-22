@@ -24,7 +24,7 @@
     - To push to remote repo
       - `git push`
       
-  - RF24 Library Documentation: https://maniacbug.github.io/RF24/classRF24.html
+  - RF24 Library Documentation: https://nrf24.github.io/RF24/classRF24.html
   - RF24 Tutorial: https://howtomechatronics.com/tutorials/arduino/arduino-wireless-communication-nrf24l01-tutorial/
   
   
