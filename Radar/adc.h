@@ -1,5 +1,5 @@
-#ifndef ADC_h
-#define ADC_h
+#ifndef adc_h
+#define adc_h
 
 
 extern uint8_t const SAMPLE_MAX;
@@ -39,4 +39,4 @@ ISR(ADC_vect)
 	SREG = temp;
 }
 
-#endif /* ADC_h*/
+#endif /* adc_h*/
