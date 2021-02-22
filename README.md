@@ -27,4 +27,6 @@
   - RF24 Library Documentation: https://nrf24.github.io/RF24/classRF24.html
   - RF24 Tutorial: https://howtomechatronics.com/tutorials/arduino/arduino-wireless-communication-nrf24l01-tutorial/
   
+  - [Signal State Diagram](https://drive.google.com/file/d/1SXXWFQub_RAO9IWIOhbIvrC0gkTXHe1I/view?usp=sharing)
+  
   
