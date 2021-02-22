@@ -3,7 +3,7 @@
 
 #include "arduinoFFT.h" //Comment out all instances of vImag array so bigger dataset can be used
                         //vImag is always 0 in our case 
-#define LOWEST_MAX_VAL 20
+#define LOWEST_MAX_VAL 30
 #define ROAD_DISTANCE 80 //Distance between stations in meters
 
 extern volatile double data_in[2][128];
@@ -37,9 +37,12 @@ double freqToMPS(double freq)
   return (freq * double(0.006061));
 }
 
-double freqToLightTime(double freq)
+// (1/mps) * meters = number of seconds for car at current speed
+//                    to travel to top of hill 
+uint32_t freqToLightTime(double freq)
 {
-  return ((double(1) / freqToMPS(freq)) * double(ROAD_DISTANCE));
+  double s = (double(1) / freqToMPS(freq)) * double(ROAD_DISTANCE);
+  return uint32_t(s * 1000);
 }
 
 double dopplerFreq(uint8_t filled)

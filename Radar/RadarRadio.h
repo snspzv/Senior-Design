@@ -7,27 +7,30 @@
 
 // Radio settings
 RF24 radio(7, 8); // CE, CSN
-const byte address[6] = "00001";
+uint64_t tx_address = 0xAABBCCDDEE;
 
-void RadioSetup() {
+void radioInit() {
   // Radio Setu1p
   radio.begin();
-  radio.openWritingPipe(address);
+  radio.openWritingPipe(tx_address);
   radio.setPALevel(RF24_PA_HIGH);
+  radio.setDataRate(RF24_250KBPS);
+  radio.setAutoAck(true);
+  radio.setRetries(5, 2); //1000 us wait, 2 retry max
   radio.setChannel(108);
   radio.stopListening();
 }
 //takes in time variable, for now is arbitrary, and needs to flash for the amount of time
 //sensed from radar.c
-void transmit(const uint8_t time) {
-
-  uint8_t packet_success;
+void transmit(uint32_t t) {
+  uint32_t data[2];
+  data[0] = t;
+  data[1] = 0;
   //write() returns a bool indicating if the ack was rec'd or not, could be useful for error checking 
   // and triggering a pulsing beacon for a backup *** AUTO ACK feature needs to be enabled for this
-  packet_success = radio.write(&time, sizeof(time));
-  /*if (packet_success)
-    {
-      send a retry/backup here?    
-    }*/
+  bool packet_success = radio.write(&data, sizeof(data));
+  
+  //Already automatically retries with radio.SetRetries
+  //May add logic for custom acks
 }
 #endif /* radarradio_h */

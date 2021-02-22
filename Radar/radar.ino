@@ -17,6 +17,7 @@ volatile uint8_t samples = 0;
 void setup() {
   ADCInit();
   timerInit();
+  radioInit();
   Serial.begin(115200);
   sei();
 }
@@ -33,13 +34,19 @@ void loop() {
     startTimer();//Start countdown to begin filling next buffer
 
     double freq = dopplerFreq(filled);
-    if(freq != 0)
+//    if(freq != 0)
+//    {
+//      Serial.print(freqToLightTime(ms));
+//      Serial.print(" s\n");
+//    }
+    if(freq == 0)
     {
-      Serial.print(freqToMPH(freq));
-      Serial.print(" mph\n");
+      transmit(uint32_t(0));
     }
-
-    //transmit(freqToLightTime(freq));
+    else
+    {
+      transmit(freqToLightTime(freq));
+    }
   }
   
 }

@@ -10,40 +10,53 @@ volatile uint8_t g_state = LIGHT_OFF;
 
 void setup() {
   // put your setup code here, to run once:
-  lightTimerInit();
-  radioTimerInit();
-  RadioSetup();
+//  lightTimerInit();
+//  radioTimerInit();
+  Serial.begin(9600);
+  radioInit();
   lightInit();
-  startRadioTimer();
+//  startRadioTimer();
 }
 
 void loop() {
-  
-  if(dataReceived())
+  uint32_t timeOn;
+  if(dataReceived(timeOn))
   {
-    restartRadioTimer();
-  
-    if(timeOn > 0)
+    if(timeOn == 0)
     {
-      if(g_state == LIGHT_ON)
-      {
-        restartLightTimer();
-      }
-  
-      else if((g_state == LIGHT_OFF) || (g_state == LIGHT_BLINKING))
-      {
-        lightOnSolid();
-        startLightTimer();
-        g_state = LIGHT_ON;
-      }
+      lightOff();
     }
-  
-    else if ((timeOn == 0) && (g_state == LIGHT_BLINKING))
+
+    else
     {
-      lightOff(); 
-      g_state = LIGHT_OFF;
+      lightOnSolid();
+      //delay(1000);
     }
   }
+    
+//    restartRadioTimer();
+//  
+//    if(timeOn > 0)
+//    {
+//      if(g_state == LIGHT_ON)
+//      {
+//        restartLightTimer();
+//      }
+//  
+//      else if((g_state == LIGHT_OFF) || (g_state == LIGHT_BLINKING))
+//      {
+//        lightOnSolid();
+//        startLightTimer();
+//        g_state = LIGHT_ON;
+//      }
+//    }
+  
+//    else if ((timeOn == 0) && (g_state == LIGHT_BLINKING))
+//    {
+//      lightOff(); 
+//      g_state = LIGHT_OFF;
+//    }
+//  }
     
 
 }
