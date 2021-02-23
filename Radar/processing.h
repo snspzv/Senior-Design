@@ -3,6 +3,8 @@
 
 #include "arduinoFFT.h" //Comment out all instances of vImag array so bigger dataset can be used
                         //vImag is always 0 in our case 
+#define LOWEST_MAX_VAL 20
+#define ROAD_DISTANCE 80 //Distance between stations in meters
 
 extern volatile double data_in[2][128];
 extern uint8_t const SAMPLE_MAX;
@@ -30,19 +32,29 @@ double freqToMPH(double freq)
   return (freq * double(0.013557)); 
 }
 
-double findSpeed(uint8_t filled)
+double freqToMPS(double freq)
+{
+  return (freq * double(0.006061));
+}
+
+double freqToLightTime(double freq)
+{
+  return ((double(1) / freqToMPS(freq)) * double(ROAD_DISTANCE));
+}
+
+double dopplerFreq(uint8_t filled)
 {
   uint16_t maxVal = 0;
   double peakFreq = getPeakFreq(maxVal, filled);
 
   //check if amplitude at peak frequency is below movement threshold
   //probably will need to adjust this value later
-  if(maxVal < 20)
+  if(maxVal < LOWEST_MAX_VAL)
   {
     return 0;
   }
 
-  return freqToMPH(peakFreq);
+  return peakFreq;
   
 }
 

@@ -32,14 +32,14 @@ void loop() {
     
     startTimer();//Start countdown to begin filling next buffer
 
-    double mph = findSpeed(filled);
-    if(mph != 0)
+    double freq = dopplerFreq(filled);
+    if(freq != 0)
     {
-      Serial.print(mph);
+      Serial.print(freqToMPH(freq));
       Serial.print(" mph\n");
     }
 
-    //Transmit(mph)
+    //transmit(freqToLightTime(freq));
   }
   
 }
