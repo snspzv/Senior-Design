@@ -7,6 +7,7 @@
 #define LIGHT_BLINKING 2
 
 volatile uint8_t g_state = LIGHT_OFF; 
+volatile bool g_packetArrived = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -15,13 +16,15 @@ void setup() {
   Serial.begin(9600);
   radioInit();
   lightInit();
+  sei();
 //  startRadioTimer();
 }
 
 void loop() {
-  uint32_t timeOn;
-  if(dataReceived(timeOn))
+  if(g_packetArrived)
   {
+    g_packetArrived = false;
+    uint32_t timeOn = getTime();
     if(timeOn == 0)
     {
       lightOff();

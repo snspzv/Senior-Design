@@ -5,12 +5,16 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 
-// Radio Settings
+extern volatile bool g_packetArrived;
+
 RF24 radio(7, 8); // CE, CSN
 uint64_t rx_address = 0xAABBCCDDEE;
 uint32_t dataIn[2];
 
 void radioInit() {
+  //Interrupt on pin 3 (INT1)
+  EICRA = 0; //Low level of INT1 generates interrupt
+  EIMSK = (1 << INT1); //Enable interrupts on INT1
   // Radio Setup
   radio.begin();
   radio.openReadingPipe(1, rx_address);
@@ -25,16 +29,15 @@ void radioInit() {
  * Function to poll radio channel for new data arriving
  * Should store data parameter passed by reference if received and return true
  */
-bool dataReceived(uint32_t &timeOn)
+uint32_t getTime()
 {
-  if(radio.available())
-  {
-     radio.read(&dataIn, sizeof(dataIn));
-     //Serial.println(dataIn[0]);
-     timeOn = dataIn[0];
-     return true;
-  }
-  
-  return false;
+   radio.read(&dataIn, sizeof(dataIn));
+   //Serial.println(dataIn[0]);
+   return dataIn[0];
+}
+
+ISR(INT1_vect)
+{
+  g_packetArrived = true;
 }
 #endif /* signalradio_h */
