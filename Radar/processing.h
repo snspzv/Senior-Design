@@ -41,6 +41,10 @@ double freqToMPS(double freq)
 //                    to travel to top of hill 
 uint32_t freqToLightTime(double freq)
 {
+  if(freq == 0)
+  {
+    return uint32_t(0);
+  }
   double s = (double(1) / freqToMPS(freq)) * double(ROAD_DISTANCE);
   return uint32_t(s * 1000);
 }
