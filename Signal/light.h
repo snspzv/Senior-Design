@@ -2,13 +2,13 @@
 #define light_h
 
 // Change control pin by changing value of RELAY
-const int RELAY = 4;
+const int RELAY = 9;
 
 // Setup funtion for relay control
 void lightInit()
 {
   pinMode(RELAY, OUTPUT); // Set pin mode
-  digitalWrite(RELAY, LOW); // making sure that it is off
+  digitalWrite(RELAY, HIGH); // making sure that it is off
 }
 
 void lightOnSolid() // Turns relay on

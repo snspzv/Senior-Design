@@ -22,8 +22,8 @@ void RadioSetup() {
  * Function to poll radio channel for new data arriving
  * Should store data parameter passed by reference if received and return true
  */
-bool dataReceived(&timeOn)
-{
- 
-}
+//bool dataReceived(&timeOn)
+//{
+// 
+//}
 #endif /* signalradio_h */
