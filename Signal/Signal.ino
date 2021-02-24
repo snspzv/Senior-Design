@@ -2,9 +2,7 @@
 #include "lightTimer.h"
 #include "radioTimer.h"
 #include "SignalRadio.h"
-#define LIGHT_OFF 0
-#define LIGHT_ON 1
-#define LIGHT_BLINKING 2
+#include "constants.h"
 
 volatile uint8_t g_state = LIGHT_OFF; 
 volatile bool g_packetArrived = 0;

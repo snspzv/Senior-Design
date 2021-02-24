@@ -1,27 +1,24 @@
 #ifndef light_h
 #define light_h
 
-void lightOnSolid()
-{
-  digitalWrite(4, HIGH);
-}
+// Change control pin by changing value of RELAY
+const int RELAY = 9;
 
-void lightOnBlinking()
-{
-    digitalWrite(4, HIGH);
-    delay(1000);
-    digitalWrite(4, LOW);
-}
-
-void lightOff()
-{
-  digitalWrite(4, LOW);
-}
-
+// Setup funtion for relay control
 void lightInit()
 {
-  pinMode(4, OUTPUT);
-  digitalWrite(4, LOW);
+  pinMode(RELAY, OUTPUT); // Set pin mode
+  digitalWrite(RELAY, HIGH); // making sure that it is off
+}
+
+void lightOnSolid() // Turns relay on
+{
+  digitalWrite(RELAY, HIGH); // Push 5 V to Pin 4
+}
+
+void lightOff() // Turns relay off
+{
+  digitalWrite(RELAY, LOW); // Push 0 V to Pin 4
 }
 
 #endif /* light_h */
