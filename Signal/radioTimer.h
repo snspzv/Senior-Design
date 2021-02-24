@@ -1,6 +1,7 @@
 //#ifndef radiotimer_h
 //#define radiotimer_h
 //
+//#include "lightTimer.h"
 //extern volatile uint8_t g_state;
 //
 //void initRadioTimer()
@@ -13,6 +14,11 @@
 //  
 //}
 //
+//void stopRadioTimer()
+//{
+//  
+//}
+//
 //void restartRadioTimer()
 //{
 //  
@@ -20,7 +26,8 @@
 //
 //ISR(/*timer interrupt vector*/)
 //{
-//  lightOnBlinking();
+//  startLightBlinking();
 //  g_state = LIGHT_BLINKING;
+//  stopRadioTimer();
 //}
 //#endif /* radiotimer_h */
