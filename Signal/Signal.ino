@@ -4,25 +4,37 @@
 #include "SignalRadio.h"
 #include "constants.h"
 
-volatile uint8_t g_state = LIGHT_ON; 
+volatile uint8_t g_state = LIGHT_OFF; 
+volatile bool g_packetArrived = 0;
 
 void setup() {
   // put your setup code here, to run once:
-  
-  lightTimerInit();
+//  lightTimerInit();
 //  radioTimerInit();
-//  RadioSetup();
-  lightInit();
-//  startRadioTimer();
   Serial.begin(9600);
+  radioInit();
+  lightInit();
   sei();
-  startLightTimer(double(12.7));
+//  startRadioTimer();
 }
 
 void loop() {
+  if(g_packetArrived)
+  {
+    g_packetArrived = false;
+    uint32_t timeOn = getTime();
+    if(timeOn == 0)
+    {
+      lightOff();
+    }
 
-//  if(dataReceived())
-//  {
+    else
+    {
+      lightOnSolid();
+      //delay(1000);
+    }
+  }
+    
 //    restartRadioTimer();
 //  
 //    if(timeOn > 0)
@@ -39,7 +51,7 @@ void loop() {
 //        g_state = LIGHT_ON;
 //      }
 //    }
-//  
+  
 //    else if ((timeOn == 0) && (g_state == LIGHT_BLINKING))
 //    {
 //      lightOff(); 
