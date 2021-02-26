@@ -4,7 +4,6 @@
 #include "constants.h"
 #include "light.h"
 static const uint32_t AVAILABLE_TICKS = 255; //@prescale 1024
-static const uint32_t TICKS_IN_SECOND = 15625; //@prescale 1024
 extern volatile uint8_t g_state;
 static volatile uint8_t timer_iterations;
 
@@ -31,20 +30,6 @@ void restartLightTimer(double seconds)
   TCCR2B &= ~((1 << CS22) | (1<<CS21) | (1<< CS20)); //Stop timer to restart w/ new values
   startLightTimer(seconds);
 }
-
-//is startlightblinking just blinking for a second on and off?
-//run into the issue with ocr2, not sure how to fix at this moment
-/*
-void startLightBlinking()
-{
-  TIMSK2 = 0; //Disable timer 1 interrupts
-  TCCR2A |= (1 << COM1A0); //Toggle OC1A (LED pin) on compare match
-  OCR1AH = uint8_t(TICKS_IN_SECOND >> 8);
-  OCR1AL = uint8_t(TICKS_IN_SECOND & 0x00FF);
-  //***TODO check prescale for either timer2 or timer0 
-  TCCR2B |= ((1 << CS22) | (1<<CS21) | (1<< CS20)); //1024 prescale, actually starts timer
-}
-*/
 
 //Used to shutoff timer after done
 ISR(TIMER2_COMPA_vect)

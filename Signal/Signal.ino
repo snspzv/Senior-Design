@@ -10,38 +10,42 @@ volatile bool g_packetArrived = false;
 void setup() {
   cli();
   lightTimerInit();
-//  radioTimerInit();
+  radioTimerInit();
   radioInit();
   lightInit();
   sei();
-//  startRadioTimer();
+  startRadioTimer();
 }
 
 void loop() {
-  if(g_packetArrived)
-  {
-    //    restartRadioTimer();
-    g_packetArrived = false;
-    double timeOn = getTime();
-    if(timeOn > 0)
-    {
-      if(g_state == LIGHT_ON)
-      {
-        restartLightTimer(timeOn);
-      }
-  
-      else if((g_state == LIGHT_OFF) || (g_state == LIGHT_BLINKING))
-      {
-        lightOnSolid();
-        startLightTimer(timeOn);
-        g_state = LIGHT_ON;
-      }
-    }
-  
-    else if ((timeOn == 0) && (g_state == LIGHT_BLINKING))
-    {
-      lightOff(); 
-      g_state = LIGHT_OFF;
-    }
-  }
+//  if(g_state == LIGHT_BLINKING)
+//  {
+//    startLightBlinking();
+//  }
+//  if(g_packetArrived)
+//  {
+//    //    restartRadioTimer();
+//    g_packetArrived = false;
+//    double timeOn = getTime();
+//    if(timeOn > 0)
+//    {
+//      if(g_state == LIGHT_ON)
+//      {
+//        restartLightTimer(timeOn);
+//      }
+//  
+//      else if((g_state == LIGHT_OFF) || (g_state == LIGHT_BLINKING))
+//      {
+//        lightOnSolid();
+//        startLightTimer(timeOn);
+//        g_state = LIGHT_ON;
+//      }
+//    }
+//  
+//    else if ((timeOn == 0) && (g_state == LIGHT_BLINKING))
+//    {
+//      lightOff(); 
+//      g_state = LIGHT_OFF;
+//    }
+//  }
 }
