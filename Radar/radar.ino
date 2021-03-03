@@ -39,7 +39,9 @@ void loop() {
 //      Serial.print(freqToLightTime(ms));
 //      Serial.print(" s\n");
 //    }
+    uint32_t t = freqToLightTime(freq);
+      Serial.println(freqToLightTime(freq));
+      transmit(freqToLightTime(freq));
     
-    transmit(freqToLightTime(freq));
   }
 }

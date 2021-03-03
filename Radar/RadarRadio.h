@@ -23,7 +23,7 @@ void radioInit() {
 //takes in time variable, for now is arbitrary, and needs to flash for the amount of time
 //sensed from radar.c
 void transmit(uint32_t t) {
-  uint32_t data[2];
+  double data[2];
   data[0] = t;
   data[1] = 0;
   //write() returns a bool indicating if the ack was rec'd or not, could be useful for error checking 

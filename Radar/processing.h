@@ -3,10 +3,10 @@
 
 #include "arduinoFFT.h" //Comment out all instances of vImag array so bigger dataset can be used
                         //vImag is always 0 in our case 
-#define LOWEST_MAX_VAL 30
+#define LOWEST_MAX_VAL 50
 
 /****CHANGE THIS BACK FOR REAL USE****/
-#define ROAD_DISTANCE 30 //Distance between stations in meters
+#define ROAD_DISTANCE 50 //Distance between stations in meters
 /*************************************/
 
 extern volatile double data_in[2][128];

@@ -45,9 +45,11 @@ void startLightBlinking()
 
 ISR(TIMER1_COMPA_vect)
 {
+  uint8_t temp = SREG;
   g_state = LIGHT_BLINKING;
   stopRadioTimer();
   startLightBlinking();
+  SREG = temp;
 }
 
 #endif /* radiotimer_h */

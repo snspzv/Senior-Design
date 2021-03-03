@@ -39,5 +39,7 @@ double getTime()
 ISR(INT1_vect)
 {
   g_packetArrived = true;
+  stopRadioTimer();
+  startRadioTimer();
 }
 #endif /* signalradio_h */
