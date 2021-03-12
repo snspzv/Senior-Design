@@ -1,12 +1,19 @@
 #ifndef adc_h
 #define adc_h
 
+// for the Teensy, 
+// from pedvide's github
+// do we need?
+#include <VREF.h>
+#include <ADC.h>
+#include <ADC_util.h>
 
+//teensy clock rate is 180 MHz
 extern uint8_t const SAMPLE_MAX;
 extern volatile double data_in[2][128];
 extern volatile uint8_t currently_filling;
 extern volatile uint8_t samples;
-
+/*
 void ADCInit()
 {
 	DDRC &= ~(1 << DDC0); //set bit 0 of port c (analog pin 0) to input
@@ -38,5 +45,135 @@ ISR(ADC_vect)
 
 	SREG = temp;
 }
+*/
+/*
+//interrupts possibly found in adc_pdb 
+//teensy isr here()
+{
+  
+}
+*/
+const int readPin = A9;
+const int readPin2 = A3;
+
+//makes an adc object with members adc1 and adc0
+
+ADC *adc = new ADC(); 
+
+void ADCInit()
+{
+
+//makes an adc object with members adc1 and adc0
+
+// setting up pin
+pinMode(LED_BUILTIN, OUTPUT);
+pinMode(readPin, INPUT);
+pinMode(readPin2, INPUT);
+
+Serial.begin(9600);
+/*
+/
+/ we might be able to do it like this, I believe that the pins 
+// are enumerated, and the isr's are setup like pedvide has setup
+// so that should be plug n play
+
+//option 1 declare everything here not using pedvide's stuff 
+
+
+//long sample time
+//ADLSMP = 1;
+atomic::setBitFlag(adc_regs.CFG1, ADC_CFG1_ADLSMP);
+
+// asynchronous clock output disabled, only enabled if selected by adiclk
+//ADACKEN = 0;
+atomic::clearBitFlag(adc_regs.CFG2, ADC_CFG2_ADACKEN);
+
+// bus clock divded by 2
+//ADICLK = 1;
+atomic::setBitFlag(adc_regs.CFG1, ADC_CFG1_ADICLK(1));
+
+// divide bus clock again by 2
+//ADIV = 01;
+atomic::setBitFlag(adc_regs.CFG1, ADC_CFG1_ADIV(1));
+
+//hardware average function enabled
+//AVGE = 1;
+atomic::setBitFlag(adc_regs.SC3, ADC_SC3_AVGE);
+
+//ADCO = 1; continuous conversions 
+//
+atomic::setBitFlag(adc_regs.SC3, ADC_SC3_ADCO);
+
+
+// 32 samples averaged
+//AVGS = 3;
+atomic::setBitFlag(adc_regs.SC3, ADC_SC3_AVGS(3));
+
+//long conversion time 
+//ADLSMP = 1;
+atomic::setBitFlag(adc_regs.CFG, ADC_CFG_ADLSMP);
+
+
+// default longest sample time, +20adck cycles, 24 adck cycles total
+//ADLSTS = 0;
+atomic::setBitFlag(adc_regs.CFG2, ADC_CFG2_ADLSTS(0));
+
+//highspeed conversion sequence selected w/ 2 additional adck cycles to 
+//total conversion time
+//ADHSC = 1;
+atomic::setBitFlag(adc_regs.CFG2, ADC_CFG2_ADHSC);
+
+//DIFF = 0 , differential conversions and input channels are selected
+atomic::clearBitFlag(adc_regs.SC1A, ADC_SC1A_DIFF);
+
+
+//MODE = 01 , single ended 12 bit conversion
+atomic::setBitFlag(adc_regs.CFG1, ADC_CFG1_MODE(1));
+
+
+//enable interrupts
+//AIEN = 1;
+atomic::setBitFlag(adc_regs.SC1A, ADC_SC1_AIEN);
+
+attachInterruptVector(IRQ_ADC, isr);
+NVIC_SET_PRIORITY(IRQ_ADC, priority);
+NVIC_ENABLE_IRQ(IRQ_ADC);
+
+delay(100);
+Serial.println("end setup");
+
+
+*/
+delay(100);
+Serial.println("end setup");
+
+///// ADC0 ////
+
+//pedvide's setting for sampling speed does not use the combination that
+// we are looking for i.e. adlsts = 00
+// these also set the bits, too, but will need to 
+//still declare everything other than adlsmp, adsts, adhsc and adlpc
+
+/*
+adc->adc0->setAveraging(1); // set number of averages
+adc->adc0->setResolution(8); // set bits of resolution
+//high_speed is adding 6cc's to the clock rate
+adc->adc0->setConversionSpeed(ADC_CONVERSION_SPEED::HIGH_SPEED); // change the conversion speed
+adc->adc0->setSamplingSpeed(ADC_SAMPLING_SPEED::MEDIUM_SPEED; // change the sampling speed
+
+////// ADC1 /////
+adc->adc1->setAveraging(1); // set number of averages
+adc->adc1->setResolution(8); // set bits of resolution
+adc->adc1->setConversionSpeed(ADC_CONVERSION_SPEED::HIGH_SPEED); // change the conversion speed
+adc->adc1->setSamplingSpeed(ADC_SAMPLING_SPEED::HIGH_MEDIUM_SPEED); // change the sampling speed
+
+// we have started to get values from the ADC, still need to read the values
+// with readSynchronizedContinuous
+adc->startSynchronizedContinuous(readPin, readPin2);
+
+delay(100);
+Serial.println("end setup");
+}
+*/
 
 #endif /* adc_h*/
