@@ -28,5 +28,7 @@
   - RF24 Tutorial: https://howtomechatronics.com/tutorials/arduino/arduino-wireless-communication-nrf24l01-tutorial/
   
   - [Signal State Diagram](https://drive.google.com/file/d/1SXXWFQub_RAO9IWIOhbIvrC0gkTXHe1I/view?usp=sharing)
+
+ - Teensy Software: https://www.pjrc.com/teensy/td_download.html
   
   
