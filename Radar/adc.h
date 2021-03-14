@@ -53,32 +53,18 @@ ISR(ADC_vect)
   
 }
 */
-const int readPin = A9;
-const int readPin2 = A3;
-
-//makes an adc object with members adc1 and adc0
-
-ADC *adc = new ADC(); 
 
 void ADCInit()
 {
 
-//makes an adc object with members adc1 and adc0
-
-// setting up pin
-pinMode(LED_BUILTIN, OUTPUT);
-pinMode(readPin, INPUT);
-pinMode(readPin2, INPUT);
-
 Serial.begin(9600);
-/*
-/
-/ we might be able to do it like this, I believe that the pins 
+
+
+// we might be able to do it like this, I believe that the pins 
 // are enumerated, and the isr's are setup like pedvide has setup
 // so that should be plug n play
 
 //option 1 declare everything here not using pedvide's stuff 
-
 
 //long sample time
 //ADLSMP = 1;
@@ -139,14 +125,6 @@ attachInterruptVector(IRQ_ADC, isr);
 NVIC_SET_PRIORITY(IRQ_ADC, priority);
 NVIC_ENABLE_IRQ(IRQ_ADC);
 
-delay(100);
-Serial.println("end setup");
-
-
-*/
-delay(100);
-Serial.println("end setup");
-
 ///// ADC0 ////
 
 //pedvide's setting for sampling speed does not use the combination that
@@ -171,9 +149,10 @@ adc->adc1->setSamplingSpeed(ADC_SAMPLING_SPEED::HIGH_MEDIUM_SPEED); // change th
 // with readSynchronizedContinuous
 adc->startSynchronizedContinuous(readPin, readPin2);
 
+*/
 delay(100);
 Serial.println("end setup");
 }
-*/
+
 
 #endif /* adc_h*/

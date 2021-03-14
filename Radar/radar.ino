@@ -10,8 +10,8 @@
 
 //to be ran with Teensy board
 uint16_t const SAMPLE_MAX = 256;
-volatile double data_in_i[2][SAMPLE_MAX];
-volatile double data_in_q[2][SAMPLE_MAX];
+volatile double data_in_I[2][SAMPLE_MAX];
+volatile double data_in_Q[2][SAMPLE_MAX];
 volatile uint8_t currently_filling = 0;
 uint8_t filled = 2;
 volatile uint8_t samples = 0;
@@ -32,6 +32,22 @@ void setup() {
 // ISR in adc.h?
 
 //dont change the idea, just switch over to teensy
+
+const int readpinI = A9; //adc0
+const int readpinQ = A6; // adc1
+
+// if we want to define in ADCinit()?
+//extern adc;
+
+ADC *adc = new ADC();
+
+pinMode(LED_BUILTIN, OUTPUT);
+pinMode(readpinI, INPUT);
+pinMode(readpinQ, INPUT);
+
+// struct to keep track of readouts from pin1 and pin2
+Sync_result readouts;
+
 void loop() {
 /*
   //one data_in buffer is done being filled
@@ -55,11 +71,39 @@ void loop() {
     transmit(freqToLightTime(freq));
   }
   */
-  // struct to keep tract of readouts from pin1 and pin2
-  Sync_result readouts;
+  
 
   //reads in the values of pin1 and pin2 to adc0 and adc1
   readouts = adc->readSynchronizedContinuous();
-  //fill the arrays here
+
+  //**do we need to do this?**
+  // if using 16 bits and single-ended is necessary to typecast to unsigned,
+  // otherwise values larger than 3.3/2 will be interpreted as negative
+  readouts.result_adc0 = (uint16_t)readouts.result_adc0;
+  readouts.result_adc1 = (uint16_t)readouts.result_adc1;
+
+  //fill the arrays here?
+
+
   //main question, can we use an ISR for filling the arrays to feed into FFT?
+  Serial.print(time, DEC);
+  Serial.print(" ");
+  Serial.print(result.result_adc0*3.3/adc->adc0->getMaxValue(), DEC);
+  Serial.print(" ");
+  Serial.println(result.result_adc1*3.3/adc->adc1->getMaxValue(), DEC);
+
+
+  // Print errors, if any.
+  if(adc->adc0->fail_flag != ADC_ERROR::CLEAR) 
+  {
+    Serial.print("ADC0: "); Serial.println(getStringADCError(adc->adc0->fail_flag));
+  }
+      
+  if(adc->adc1->fail_flag != ADC_ERROR::CLEAR) 
+  {
+    Serial.print("ADC1: "); Serial.println(getStringADCError(adc->adc1->fail_flag));
+  }
+
+
+  digitalWriteFast(LED_BUILTIN, !digitalReadFast(LED_BUILTIN));
 }
