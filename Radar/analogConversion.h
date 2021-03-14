@@ -1,42 +1,75 @@
 #ifndef adc_h
 #define adc_h
 
+#include <ADC.h>
+#include <ADC_util.h>
 
 extern uint8_t const SAMPLE_MAX;
-extern volatile double data_in[2][128];
+extern volatile double data_real[2][128];
+extern volatile double data_imag[2][128];
 extern volatile uint8_t currently_filling;
-extern volatile uint8_t samples;
+extern volatile uint8_t samples_real;
+extern volatile uint8_t samples_imag;
+static ADC *adc = new ADC();
+const int readPin = A9;
+const int readPin2 = A6;
 
 void ADCInit()
 {
-	DDRC &= ~(1 << DDC0); //set bit 0 of port c (analog pin 0) to input
-  ADCSRB = 0; //Free running mode
-  ADMUX |= (0 & 0x07)|    // (using analog pin 0) |
-           (1 << REFS0);//|  //(use AVcc (5V) for reference voltage) |  
-           //(1 << ADLAR);  //(left shift ADC result (8 bit resolution, only read from ADCH))
-                                                              
-  ADCSRA = 0; 
-  //PRECALE CURRENTLY 128 -> 125 kHz ADC clock,  9.615 kHz sampling rate, ~65 mph cap
-  //Having ADC clock < 150 kHz allows for 10 bit precision, likely will need to go to 8 bit precision for real application to exceed 65 mph cap, OK for lab testing                                                  
-  ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0) | //(64 prescaler -> 250 kHz ADC clock, 19.23 kHz sampling rate > 14.752 kHz Nyquist frequency for 100 mph cap) |
-            (1 << ADATE) |  //(enable auto-trigger (free-running mode selected in B)) |
-            (1 << ADIE) |   //(enable interrupts when ADC done) |
-            (1 << ADEN) |   //(enable ADC) |
-            (1 << ADSC);    //(start ADC)                                                               
+  pinMode(readPin, INPUT);
+  pinMode(readPin2, INPUT);
+  
+  //Set # of averages per conversion
+  adc->adc1->setAveraging(32);
+  adc->adc0->setAveraging(32);
+
+  //Set # of bits in conversion
+  //8, 10, 12, or 16 for single ended
+  adc->adc1->setResolution(12); 
+  adc->adc0->setResolution(12); 
+
+  //Set ADCK, with CPU @ 24 MHz and Bus clock @ 24 MHz with bus clock or bus clock /2 as input to ADCK:
+  //LOW_SPEED: 3 MHz
+  //MED_SPEED: 12 MHz
+  //HIGH_SPEED: 24 MHz
+  //VERY_HIGH_SPEED: 24 MHz
+  adc->adc1->setConversionSpeed(ADC_CONVERSION_SPEED::HIGH_SPEED); // change the conversion speed
+  adc->adc0->setConversionSpeed(ADC_CONVERSION_SPEED::HIGH_SPEED); // change the conversion speed
+
+  //Set extra ADC cycles to add each conversion
+  //VERY_LOW_SPEED: 20 extra
+  //LOW_SPEED: 12 extra
+  //MED_SPEED: 6 extra
+  //HIGH_SPEED: 2 extra
+  //VERY_HIGH_SPEED: 0 extra
+  adc->adc1->setSamplingSpeed(ADC_SAMPLING_SPEED::VERY_LOW_SPEED); // change the sampling speed
+  adc->adc0->setSamplingSpeed(ADC_SAMPLING_SPEED::VERY_LOW_SPEED); // change the sampling speed
+
+  //Interrupts enabled when conversions complete
+  adc->adc1->enableInterrupts(adc1_isr);
+  adc->adc0->enableInterrupts(adc0_isr);
+
+  //Puts both adcs in continuous mode
+  //Come back later to modify for closer start time on each
+  adc->startSynchronizedContinuous(readPin, readPin2);                                               
 }
 
-ISR(ADC_vect)
+void adc1_isr(void)
 {
-	uint8_t const temp = SREG;
-  if(samples < 128)
+  if (samples_real < 128)
   {
-      uint8_t lower = ADCL; //unecessary for 8 bit precision
-      data_in[currently_filling][samples] = (ADCH << 8) | lower;//10 bit precision
-      //data_in[currently_filling][samples] = ADCH; //8 bit precision, must set ADLAR before using
-      samples++;
+     data_real[currently_filling][samples_real] = adc->adc1->analogReadContinuous();
+     samples_real++;
   }
+}
 
-	SREG = temp;
+void adc0_isr(void)
+{
+  if (samples_imag < 128)
+  {
+     data_imag[currently_filling][samples_imag] = adc->adc0->analogReadContinuous();
+     samples_imag++;
+  }
 }
 
 #endif /* adc_h*/

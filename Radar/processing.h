@@ -1,8 +1,8 @@
 #ifndef processing_h
 #define processing_h
 
-#include "arduinoFFT.h" //Comment out all instances of vImag array so bigger dataset can be used
-                        //vImag is always 0 in our case 
+#include "arduinoFFT.h" 
+
 #define LOWEST_MAX_VAL 50
 
 /****CHANGE THIS BACK FOR REAL USE****/
@@ -11,17 +11,31 @@
 
 extern volatile double data_in[2][128];
 extern uint8_t const SAMPLE_MAX;
-uint16_t SAMPLING_FREQUENCY = 9615; //Hz
+uint16_t SAMPLING_FREQUENCY = 18490; //Hz
 arduinoFFT FFT = arduinoFFT();
 
 
-double getPeakFreq(uint16_t & rawMaxVal, uint8_t filled)
+double getPeakFreq(uint16_t & rawRealMax, uint16_t & rawImagMax, uint8_t filled)
 {
-  FFT.DCRemoval(data_in[filled], SAMPLE_MAX);
-  FFT.Windowing(data_in[filled], SAMPLE_MAX, FFT_WIN_TYP_HANN, FFT_FORWARD);
-  FFT.Compute(data_in[filled], SAMPLE_MAX, FFT_FORWARD);
-  FFT.ComplexToMagnitude(data_in[filled], SAMPLE_MAX);
-  return(FFT.MajorPeak(data_in[filled], SAMPLE_MAX, SAMPLING_FREQUENCY, rawMaxVal));
+  for(uint8_t i = 0; i < 128; i++)
+  {
+    Serial.print(data_real[filled][i]);
+    Serial.print(",");
+    Serial.println(data_imag[filled][i]);
+  }
+  
+  FFT.DCRemoval(data_real[filled], SAMPLE_MAX);
+  FFT.DCRemoval(data_imag[filled], SAMPLE_MAX);
+  
+  FFT.Windowing(data_real[filled], SAMPLE_MAX, FFT_WIN_TYP_HANN, FFT_FORWARD);
+  FFT.Windowing(data_imag[filled], SAMPLE_MAX, FFT_WIN_TYP_HANN, FFT_FORWARD);
+ 
+  FFT.Compute(data_real[filled], data_imag[filled], SAMPLE_MAX, FFT_FORWARD);
+  FFT.ComplexToMagnitude(data_real[filled], data_imag[filled], SAMPLE_MAX);
+
+  //**********Check on other MajorPeak function to possibly combine**************//
+  FFT.MajorPeak(data_imag[filled], SAMPLE_MAX, SAMPLING_FREQUENCY, rawImagMax);
+  return(FFT.MajorPeak(data_real[filled], SAMPLE_MAX, SAMPLING_FREQUENCY, rawRealMax));
 }
 
 
@@ -54,17 +68,18 @@ uint32_t freqToLightTime(double freq)
 
 double dopplerFreq(uint8_t filled)
 {
-  uint16_t maxVal = 0;
-  double peakFreq = getPeakFreq(maxVal, filled);
-
+  uint16_t realMaxVal = 0;
+  uint16_t imagMaxVal = 0;
+  double realPeakFreq = getPeakFreq(realMaxVal, imagMaxVal, filled);
+  
   //check if amplitude at peak frequency is below movement threshold
   //probably will need to adjust this value later
-  if(maxVal < LOWEST_MAX_VAL)
+  if(realMaxVal < LOWEST_MAX_VAL)
   {
     return 0;
   }
 
-  return peakFreq;
+  return realPeakFreq;
   
 }
 
