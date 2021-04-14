@@ -45,10 +45,10 @@ uint8_t arduinoFFT::Revision(void)
 	return(FFT_LIB_REV);
 }
 
-void arduinoFFT::Compute(double *vReal, uint16_t samples, uint8_t dir)
+void arduinoFFT::Compute(double *vReal, double *vImag, uint16_t samples, uint8_t dir)
 {
 	#warning("This method is deprecated and may be removed on future revisions.")
-	Compute(vReal, samples, Exponent(samples), dir);
+	Compute(vReal, vImag, samples, Exponent(samples), dir);
 }
 
 void arduinoFFT::Compute(uint8_t dir)
@@ -115,7 +115,7 @@ void arduinoFFT::Compute(uint8_t dir)
 	}
 }
 
-void arduinoFFT::Compute(double *vReal, uint16_t samples, uint8_t power, uint8_t dir)
+void arduinoFFT::Compute(double *vReal, double *vImag, uint16_t samples, uint8_t power, uint8_t dir)
 {	// Computes in-place complex-to-complex FFT
 	// Reverse bits
 	#warning("This method is deprecated and may be removed on future revisions.")
@@ -123,6 +123,8 @@ void arduinoFFT::Compute(double *vReal, uint16_t samples, uint8_t power, uint8_t
 	for (uint16_t i = 0; i < (samples - 1); i++) {
 		if (i < j) {
 			Swap(&vReal[i], &vReal[j]);
+			if(dir==FFT_REVERSE)
+				Swap(&vImag[i], &vImag[j]);
 		}
 		uint16_t k = (samples >> 1);
 		while (k <= j) {
@@ -146,9 +148,12 @@ void arduinoFFT::Compute(double *vReal, uint16_t samples, uint8_t power, uint8_t
 		for (j = 0; j < l1; j++) {
 			 for (uint16_t i = j; i < samples; i += l2) {
 					uint16_t i1 = i + l1;
-					double t1 = u1 * vReal[i1] - u2 * 0;
+					double t1 = u1 * vReal[i1] - u2 * vImag[i1];
+					double t2 = u1 * vImag[i1] + u2 * vReal[i1];
 					vReal[i1] = vReal[i] - t1;
+					vImag[i1] = vImag[i] - t2;
 					vReal[i] += t1;
+					vImag[i] += t2;
 			 }
 			 double z = ((u1 * c1) - (u2 * c2));
 			 u2 = ((u1 * c2) + (u2 * c1));
@@ -170,6 +175,7 @@ void arduinoFFT::Compute(double *vReal, uint16_t samples, uint8_t power, uint8_t
 	if (dir != FFT_FORWARD) {
 		for (uint16_t i = 0; i < samples; i++) {
 			 vReal[i] /= samples;
+			 vImag[i] /= samples;
 		}
 	}
 }
@@ -181,11 +187,11 @@ void arduinoFFT::ComplexToMagnitude()
 	}
 }
 
-void arduinoFFT::ComplexToMagnitude(double *vReal, uint16_t samples)
+void arduinoFFT::ComplexToMagnitude(double *vReal, double *vImag, uint16_t samples)
 {	// vM is half the size of vReal and vImag
 	#warning("This method is deprecated and may be removed on future revisions.")
 	for (uint16_t i = 0; i < samples; i++) {
-		vReal[i] = sqrt(sq(vReal[i]));
+		vReal[i] = sqrt(sq(vReal[i]) + sq(vImag[i]));
 	}
 }
 
@@ -385,7 +391,7 @@ void arduinoFFT::MajorPeak(double *f, double *v)
 	#endif
 }
 
-double arduinoFFT::MajorPeak(double *vD, uint16_t samples, double samplingFrequency, uint16_t & maxVal)
+double arduinoFFT::MajorPeak(double *vD, uint16_t samples, double samplingFrequency, uint16_t & rawMaxVal)
 {
 	#warning("This method is deprecated and may be removed on future revisions.")
 	double maxY = 0;
@@ -397,10 +403,10 @@ double arduinoFFT::MajorPeak(double *vD, uint16_t samples, double samplingFreque
 			if (vD[i] > maxY) {
 				maxY = vD[i];
 				IndexOfMaxY = i;
-				maxVal = vD[i];
 			}
 		}
 	}
+	rawMaxVal = maxY;
 	double delta = 0.5 * ((vD[IndexOfMaxY-1] - vD[IndexOfMaxY+1]) / (vD[IndexOfMaxY-1] - (2.0 * vD[IndexOfMaxY]) + vD[IndexOfMaxY+1]));
 	double interpolatedX = ((IndexOfMaxY + delta)  * samplingFrequency) / (samples-1);
 	if(IndexOfMaxY==(samples >> 1)) //To improve calculation on edge values
