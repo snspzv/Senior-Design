@@ -1,5 +1,5 @@
-//#ifndef timer_h
-//#define timer_h
+#ifndef timer_h
+#define timer_h
 //
 //
 //void timerInit()
@@ -38,4 +38,4 @@
 //  stopTimer();
 //  SREG = temp;
 //}
-//#endif /* timer_h */
+#endif /* timer_h */
