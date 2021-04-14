@@ -70,7 +70,8 @@ uint32_t freqToLightTime(double freq)
   {
     return uint32_t(0);
   }
-  return (double(1) / freqToMPS(freq)) * double(ROAD_DISTANCE);
+  double s = (double(1) / freqToMPS(freq)) * double(ROAD_DISTANCE);
+  return uint32_t(s*1000);
 }
 
 std::pair<double, double> dopplerFreq(uint8_t filled)
