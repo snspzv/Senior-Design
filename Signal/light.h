@@ -8,7 +8,7 @@ const int RELAY = 9;
 void lightInit()
 {
   pinMode(RELAY, OUTPUT); // Set pin mode
-  digitalWrite(RELAY, HIGH); // making sure that it is off
+  digitalWrite(RELAY, LOW); // making sure that it is off
 }
 
 void lightOnSolid() // Turns relay on

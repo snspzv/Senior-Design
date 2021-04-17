@@ -9,7 +9,7 @@ extern volatile bool g_packetArrived;
 
 RF24 radio(7, 8); // CE, CSN
 uint64_t rx_address = 0xAABBCCDDEE;
-uint32_t dataIn[2];
+double dataIn[2];
 
 void radioInit() {
   //Interrupt on pin 3 (INT1)
@@ -29,7 +29,7 @@ void radioInit() {
  * Function to poll radio channel for new data arriving
  * Should store data parameter passed by reference if received and return true
  */
-uint32_t getTime()
+double getTime()
 {
    radio.read(&dataIn, sizeof(dataIn));
    //Serial.println(dataIn[0]);
@@ -39,5 +39,7 @@ uint32_t getTime()
 ISR(INT1_vect)
 {
   g_packetArrived = true;
+  stopRadioTimer();
+  startRadioTimer();
 }
 #endif /* signalradio_h */

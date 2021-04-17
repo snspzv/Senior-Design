@@ -3,47 +3,53 @@
 
 #include "constants.h"
 #include "light.h"
-const uint32_t AVAILABLE_TICKS = 65535; //@prescale 1024
-const uint32_t TICKS_IN_SECOND = 15625; //@prescale 1024
+static const uint32_t AVAILABLE_TICKS = 255; //@prescale 1024
 extern volatile uint8_t g_state;
-volatile uint8_t timer_iterations = 0;
+static volatile uint16_t timer_iterations;
 
 void lightTimerInit()
 {
-  TCCR1A = 0;
-  TCCR1B = (1 << WGM12);   //CTC mode (compare OCR1A)
+  TCCR2A = (1 << WGM21);
+     //CTC mode (compare OCR1A)
 }
 
 void startLightTimer(double seconds)
 { 
   uint32_t ticks = uint32_t(seconds * TICKS_IN_SECOND);
   timer_iterations = ((ticks / AVAILABLE_TICKS) + 1);
-  uint16_t one_iteration = ticks / (uint32_t)timer_iterations;
-  OCR1AH = uint8_t(one_iteration >> 8);
-  OCR1AL = uint8_t(one_iteration & 0x00FF);
-  TIMSK1 = (1 << OCIE1A); //Interrupts enabled on OCR1 match
-  TCCR1B |= (1 << CS12) | (1<< CS10); //1024 prescaler -> 15.625 kHz (actually starts timer)
+  uint8_t one_iteration = uint8_t(ticks / (uint32_t)timer_iterations);
+//  Serial.println(ticks);
+//  Serial.println(timer_iterations);
+//  Serial.println(one_iteration);
+  OCR2A = one_iteration;
+//  Serial.println(OCR2A);
+  TIMSK2 = (1 << OCIE2A); //Interrupts enabled on OCR1 match
+  TCCR2B = ((1 << CS22) | (1<<CS21) | (1<< CS20)); //1024 prescaler -> 15.625 kHz (actually starts timer)
+//  Serial.println(TCCR2A, HEX);
+//  Serial.println(OCR2A, HEX);
+//  Serial.println(TIMSK2, HEX);
+//  Serial.println(TCCR2B, HEX);
+  //lightOnSolid();
 }
 
-void startLightBlinking()
+void restartLightTimer(double seconds)
 {
-  TIMSK1 = 0; //Disable timer 1 interrupts
-  TCCR1A |= (1 << COM1A0); //Toggle OC1A (LED pin) on compare match
-  OCR1AH = uint8_t(TICKS_IN_SECOND >> 8);
-  OCR1AL = uint8_t(TICKS_IN_SECOND & 0x00FF);
-  TCCR1B |= (1 << CS12) | (1 << CS10); //1024 prescale, actually starts timer
+  TIMSK2 &= ~(1 << OCIE2A);
+  TCCR2B &= ~((1 << CS22) | (1<<CS21) | (1<< CS20)); //Stop timer to restart w/ new values
+  TCNT2 = 0;
+  startLightTimer(seconds);
 }
 
 //Used to shutoff timer after done
-ISR(TIMER1_COMPA_vect)
-{
+ISR(TIMER2_COMPA_vect)
+{ 
   uint8_t temp = SREG;
   timer_iterations--;
   if(timer_iterations == 0)
   {
     g_state = LIGHT_OFF;
     lightOff();
-    TCCR1B &= ~((1 << CS12) | (1<< CS10));
+    TCCR2B &= ~((1 << CS22) | (1<<CS21) | (1<< CS20));
   }
   SREG = temp;
 }

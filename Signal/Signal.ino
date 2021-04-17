@@ -5,59 +5,51 @@
 #include "constants.h"
 
 volatile uint8_t g_state = LIGHT_OFF; 
-volatile bool g_packetArrived = 0;
+volatile bool g_packetArrived = false;
 
 void setup() {
-  // put your setup code here, to run once:
-//  lightTimerInit();
-//  radioTimerInit();
-  Serial.begin(9600);
+  cli();
+  lightTimerInit();
+  radioTimerInit();
   radioInit();
   lightInit();
+  Serial.begin(115200);
+ // startLightTimer(5);
   sei();
-//  startRadioTimer();
+  startRadioTimer();
 }
 
 void loop() {
   if(g_packetArrived)
   {
     g_packetArrived = false;
-    uint32_t timeOn = getTime();
-    if(timeOn == 0)
+    double timeOn = getTime();
+    if(timeOn > 0)
     {
-      lightOff();
+      Serial.println(timeOn);
+      if(g_state == LIGHT_ON)
+      {
+        lightOnSolid();
+        restartLightTimer(timeOn);
+      }
+  
+      if((g_state == LIGHT_OFF) || (g_state == LIGHT_BLINKING))
+      {
+        lightOnSolid();
+        startLightTimer(timeOn);
+        g_state = LIGHT_ON;
+      }
     }
 
-    else
-    {
-      lightOnSolid();
-      //delay(1000);
-    }
-  }
-    
-//    restartRadioTimer();
-//  
-//    if(timeOn > 0)
+//    else if (g_state == LIGHT_ON)
 //    {
-//      if(g_state == LIGHT_ON)
-//      {
-//        restartLightTimer();
-//      }
-//  
-//      else if((g_state == LIGHT_OFF) || (g_state == LIGHT_BLINKING))
-//      {
-//        lightOnSolid();
-//        startLightTimer();
-//        g_state = LIGHT_ON;
-//      }
+//      
 //    }
-  
 //    else if ((timeOn == 0) && (g_state == LIGHT_BLINKING))
 //    {
 //      lightOff(); 
 //      g_state = LIGHT_OFF;
 //    }
-//  }
-    
-
+    //startRadioTimer();
+  }
 }
