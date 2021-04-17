@@ -70,6 +70,7 @@ uint32_t freqToLightTime(double freq)
   {
     return uint32_t(0);
   }
+
   double s = (double(1) / freqToMPS(freq)) * double(ROAD_DISTANCE);
   return uint32_t(s*1000);
 }

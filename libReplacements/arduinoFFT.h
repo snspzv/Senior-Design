@@ -83,11 +83,11 @@ public:
 	uint8_t Revision(void);
 	uint8_t Exponent(uint16_t value);
 
-	void ComplexToMagnitude(double *vReal, uint16_t samples);
-	void Compute(double *vReal, uint16_t samples, uint8_t dir);
-	void Compute(double *vReal, uint16_t samples, uint8_t power, uint8_t dir);
+	void ComplexToMagnitude(double *vReal, double *vImag, uint16_t samples);
+	void Compute(double *vReal, double *vImag, uint16_t samples, uint8_t dir);
+	void Compute(double *vReal, double *vImag, uint16_t samples, uint8_t power, uint8_t dir);
 	void DCRemoval(double *vData, uint16_t samples);
-	double MajorPeak(double *vD, uint16_t samples, double samplingFrequency, uint16_t & maxVal);
+	double MajorPeak(double *vD, uint16_t samples, double samplingFrequency, uint16_t & rawMaxVal);
 	void MajorPeak(double *vD, uint16_t samples, double samplingFrequency, double *f, double *v);
 	void Windowing(double *vData, uint16_t samples, uint8_t windowType, uint8_t dir);
 
