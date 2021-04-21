@@ -14,21 +14,41 @@ void setup() {
   radioInit();
   lightInit();
   Serial.begin(115200);
- // startLightTimer(5);
   sei();
   startRadioTimer();
+//        Serial.print("A: ");
+//      Serial.print(TCCR1A, HEX);
+//      Serial.print("\tB: ");
+//      Serial.println(TCCR1B, HEX);
 }
 
 void loop() {
   if(g_packetArrived)
   {
-    g_packetArrived = false;
-    double timeOn = getTime();
-    if(timeOn > 0)
+//    EIMSK &= ~(1 << INT1); 
+    if(g_state == LIGHT_BLINKING)
     {
-      Serial.println(timeOn);
+      stopRadioTimer();
+      startRadioTimer();
+//      Serial.print("A: ");
+//      Serial.print(TCCR1A, HEX);
+//      Serial.print("\tB: ");
+//      Serial.println(TCCR1B, HEX);
+      g_state = LIGHT_OFF;
+    }
+
+    else
+    {
+      restartRadioTimer();
+    }
+    
+    g_packetArrived = false;
+    uint32_t timeOn = getTime();
+    if(timeOn > 0)
+    {      
       if(g_state == LIGHT_ON)
       {
+//        Serial.println("LIGHT_ON");
         lightOnSolid();
         restartLightTimer(timeOn);
       }
@@ -41,15 +61,12 @@ void loop() {
       }
     }
 
-//    else if (g_state == LIGHT_ON)
-//    {
-//      
-//    }
-//    else if ((timeOn == 0) && (g_state == LIGHT_BLINKING))
-//    {
-//      lightOff(); 
-//      g_state = LIGHT_OFF;
-//    }
-    //startRadioTimer();
+//    EIMSK |= (1 << INT1); 
   }
+//  lightOnSolid();
+//  delay(2000);
+//  lightOnSolid();
+//  startLightTimer(3);
+//  restartLightTimer(5);
+//  while(1);
 }

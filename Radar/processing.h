@@ -7,7 +7,7 @@
 #define LOWEST_MAX_VAL 50
 
 /****CHANGE THIS BACK FOR REAL USE****/
-#define ROAD_DISTANCE 50 //Distance between stations in meters
+#define ROAD_DISTANCE 5 //Distance between stations in meters
 /*************************************/
 
 extern volatile double data_Q[2][512];
@@ -64,7 +64,7 @@ double freqToMPS(double freq)
 // (1/mps) * meters = number of seconds for car at current speed
 //                    to travel to top of hill
 //Returns time light should be on in seconds 
-uint32_t freqToLightTime(double freq)
+double freqToLightTime(double freq)
 {
   if(freq == 0)
   {
@@ -72,7 +72,11 @@ uint32_t freqToLightTime(double freq)
   }
 
   double s = (double(1) / freqToMPS(freq)) * double(ROAD_DISTANCE);
-  return uint32_t(s*1000);
+//  Serial.print(freqToMPS(freq));
+//  Serial.print('\t');
+//  Serial.println(s);
+  
+  return s;
 }
 
 std::pair<double, double> dopplerFreq(uint8_t filled)

@@ -28,7 +28,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   ADCInit();
   //timerInit();
-  //radioInit();
+  radioInit();
   //__enable_irq();
 }
 int t = 0;
@@ -40,41 +40,42 @@ void loop() {
   { 
 //    t = micros();
     buffer_status = 0;
-    for(int i = 0; i < 512; i++)
-    {
-      data_I[filled][i] *= (double(3.3) / double(4095));
-      data_Q[filled][i] *= (double(3.3) / double(4095));
-    }
 //    FFT.DCRemoval(data_Q[filled], SAMPLE_MAX);
     FFT.DCRemoval(data_I[filled], SAMPLE_MAX);
 //    FFT.Windowing(data_Q[filled], SAMPLE_MAX, FFT_WIN_TYP_WELCH, FFT_FORWARD);
     FFT.Windowing(data_I[filled], SAMPLE_MAX, FFT_WIN_TYP_WELCH, FFT_FORWARD);
-    FFT.Compute(data_I[filled], zeroes, SAMPLE_MAX, FFT_FORWARD);
+    FFT.Compute(data_I[filled], zeroes, SAMPLE_MAX,9, FFT_FORWARD);
 //    FFT.Compute(data_Q[filled], zeroes, SAMPLE_MAX, FFT_FORWARD);
     FFT.ComplexToMagnitude(data_I[filled], zeroes, SAMPLE_MAX);
 //    FFT.ComplexToMagnitude(data_Q[filled], zeroes, SAMPLE_MAX);
     uint16_t rawIMax, rawQMax;
     double freqI = FFT.MajorPeak(data_I[filled], SAMPLE_MAX, SAMPLING_FREQUENCY, rawIMax);
-    double freqQ = FFT.MajorPeak(data_Q[filled], SAMPLE_MAX, SAMPLING_FREQUENCY, rawQMax);
+//    double freqQ = FFT.MajorPeak(data_Q[filled], SAMPLE_MAX, SAMPLING_FREQUENCY, rawQMax);
 //    Serial.println( micros() - t);
 //
-//    //if ((rawIMax > 50) && ((last_taken == 0) || (abs(last_taken - freq) < 100)))
-    if(rawIMax > 5)
-    {
-      Serial.print("MPH: ");
-      Serial.print(freqToMPH(freqI)); 
-      Serial.print("\tHz: ");
-      Serial.print(freqI);
-      Serial.print("\tMagnitude: ");
-      Serial.println(rawIMax);
- //     transmit(freqToLightTime(freqI));
+//    if(rawIMax > 5)
+//    {
+//      Serial.print("MPH: ");
+//      Serial.print(freqToMPH(freqI)); 
+//      Serial.print("\tHz: ");
+//      Serial.print(freqI);
+//      Serial.print("\tMagnitude: ");
+//      Serial.println(rawIMax);
+        if(rawIMax < 5)
+        {
+          freqI = 0;
+        }
+//        Serial.println(uint32_t((freqToLightTime(freqI))));
+      transmit(uint32_t(freqToLightTime(freqI)));// * 1000));
+//    transmit(16);
+    //delay(1000);
 ////      Serial.print("MPH: ");
 ////      Serial.print(freqToMPH(freqQ)); 
 ////      Serial.print("\tHz: ");
 ////      Serial.print(freqQ);
 ////      Serial.print("\tMagnitude: ");
 ////      Serial.println(rawQMax);
-    }
+//    }
 ////
 ////    else
 ////    {

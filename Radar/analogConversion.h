@@ -96,7 +96,7 @@ void adc1_isr(void)
 {
   if (samples_I < SAMPLE_MAX)
   {
-     data_I[currently_filling][samples_I] = uint16_t(adc->adc1->analogReadContinuous());// * 3.3 / 4095);
+     data_I[currently_filling][samples_I] = uint16_t(adc->adc1->analogReadContinuous()) * (double(3.3) / double(4095));// * 3.3 / 4095);
      samples_I++;
   }
 
@@ -120,7 +120,7 @@ void adc0_isr(void)
 { 
   if (samples_Q < SAMPLE_MAX)
   {
-    data_Q[currently_filling][samples_Q] = uint16_t(adc->adc0->analogReadContinuous());// * 3.3 /4095);
+    data_Q[currently_filling][samples_Q] = uint16_t(adc->adc0->analogReadContinuous()) *(double(3.3) / double(4095));// * 3.3 /4095);
     samples_Q++;
   }
 
