@@ -2,13 +2,6 @@
 #define processing_h
 
 #include "arduinoFFT.h" 
-#include <utility>
-
-#define LOWEST_MAX_VAL 50
-
-/****CHANGE THIS BACK FOR REAL USE****/
-#define ROAD_DISTANCE 5 //Distance between stations in meters
-/*************************************/
 
 extern volatile double data_Q[2][512];
 extern volatile double data_I[2][512];
@@ -17,11 +10,14 @@ extern uint16_t const SAMPLE_MAX;
 extern const uint8_t TOWARDS;
 extern const uint8_t AWAY;
 extern const uint8_t NO_MOVEMENT;
-const uint16_t SAMPLING_FREQUENCY = 17047; //Hz
+static const uint16_t SAMPLING_FREQUENCY = 17047; //Hz
 static const uint8_t BELOW = 0;
 static const uint8_t WITHIN = 1;
 static const uint8_t ABOVE = 2;
 static const uint8_t REQUIRED_DIR_COUNT = 10;
+/****CHANGE THIS BACK FOR REAL USE****/
+static const double ROAD_DISTANCE =  5; //Distance between stations in meters
+/*************************************/
 
 double getPeakFreq()
 {
@@ -68,7 +64,7 @@ double freqToLightTime(double freq)
     return uint32_t(0);
   }
 
-  double s = (double(1) / freqToMPS(freq)) * double(ROAD_DISTANCE);
+  double s = (double(1) / freqToMPS(freq)) * ROAD_DISTANCE;
 
   if(s <= double(1))
   {

@@ -32,9 +32,7 @@ void loop() {
 
     else
     {
-      uint32_t ti = lightOnTime();
-      Serial.println(ti);
-      //transmit(lightOnTime());
+      transmit(lightOnTime());
     }
   }
 }
