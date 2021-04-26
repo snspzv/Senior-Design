@@ -1,31 +1,28 @@
-#ifndef adc_h
-#define adc_h
+#ifndef analogconversion_h
+#define analogconversion_h
 
 #include <ADC.h>
 #include <ADC_util.h>
-#include <USBHost_t36.h>
 
-extern uint16_t const SAMPLE_MAX;
-extern volatile double data_Q[2][512];
-extern volatile double data_I[2][512];
-extern volatile uint8_t currently_filling;
-extern volatile uint8_t filled;
-extern volatile uint16_t samples_Q;
-extern volatile uint16_t samples_I;
+uint16_t const SAMPLE_MAX = 512;
+volatile double data_Q[2][SAMPLE_MAX] = {};
+volatile double data_I[2][SAMPLE_MAX] = {};
+volatile uint8_t currently_filling = 0;
+volatile uint8_t filled = 2;
+volatile uint16_t samples_Q = 0;
+volatile uint16_t samples_I = 0;
 ADC *adc = new ADC();
 const int QPin = A9; //Must be adc0
 const int IPin = A22; //must be adc1
 const uint8_t Q_READY = 1;
 const uint8_t I_READY = 2;
 extern volatile uint8_t buffer_status;
-USBHost myusb;
 
 //Starts both ADCs syncronized in continuous mode with interrupts
-//Sampling rate of 17.784 kHz (CPU clock of 144 MHz and ADCK of 24 MHz)
-//Buffer size 1024:
-  //~58 ms to fill buffers
-  //~61 ms to do processing
-//~x ms to transmit
+//Sampling rate of 17.047 kHz (CPU clock of 144 MHz and ADCK of 24 MHz)
+//Buffer size 512:
+  //~31 ms to fill buffers
+  //~26 ms to do processing
 //Transmission time + processing < fill time
 /*Possible Combinations for sampling rate >= 15kHz (with averaging at 32 and resolution at 12 bit signle ended): 
  *    Conversion speed
@@ -55,7 +52,6 @@ USBHost myusb;
  */
 void ADCInit()
 {
-  myusb.begin();
   pinMode(QPin, INPUT);
   pinMode(IPin, INPUT);
   
@@ -96,11 +92,10 @@ void adc1_isr(void)
 {
   if (samples_I < SAMPLE_MAX)
   {
-     data_I[currently_filling][samples_I] = uint16_t(adc->adc1->analogReadContinuous()) * (double(3.3) / double(4095));// * 3.3 / 4095);
+     data_I[currently_filling][samples_I] = uint16_t(adc->adc1->analogReadContinuous()) * (double(3.3) / double(4095));
      samples_I++;
   }
 
-  //Marke filled buffer as ready for processing
   else
   {
     //If other buffer done switch filled and currently filling
@@ -120,7 +115,7 @@ void adc0_isr(void)
 { 
   if (samples_Q < SAMPLE_MAX)
   {
-    data_Q[currently_filling][samples_Q] = uint16_t(adc->adc0->analogReadContinuous()) *(double(3.3) / double(4095));// * 3.3 /4095);
+    data_Q[currently_filling][samples_Q] = uint16_t(adc->adc0->analogReadContinuous()) *(double(3.3) / double(4095));
     samples_Q++;
   }
 
@@ -139,4 +134,4 @@ void adc0_isr(void)
   }  
 }
 
-#endif /* adc_h*/
+#endif /* analogconversion_h*/
