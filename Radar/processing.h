@@ -12,37 +12,35 @@
 
 extern volatile double data_Q[2][512];
 extern volatile double data_I[2][512];
+extern volatile uint8_t filled;
 extern uint16_t const SAMPLE_MAX;
-uint16_t SAMPLING_FREQUENCY = 17047; //Hz
-arduinoFFT FFT = arduinoFFT();
+extern const uint8_t TOWARDS;
+extern const uint8_t AWAY;
+extern const uint8_t NO_MOVEMENT;
+const uint16_t SAMPLING_FREQUENCY = 17047; //Hz
+static const uint8_t BELOW = 0;
+static const uint8_t WITHIN = 1;
+static const uint8_t ABOVE = 2;
+static const uint8_t REQUIRED_DIR_COUNT = 10;
 
-
-std::pair<double, double> getPeakFreq(uint16_t & rawQMax, uint16_t & rawIMax, uint8_t filled)
+double getPeakFreq()
 {
-
-//  FFT.DCRemoval(data_Q[filled], SAMPLE_MAX);
-//  FFT.DCRemoval(data_I[filled], SAMPLE_MAX);
-//
-//
-//  FFT.Windowing(data_Q[filled], SAMPLE_MAX, FFT_WIN_TYP_HANN, FFT_FORWARD);
-//  FFT.Windowing(data_I[filled], SAMPLE_MAX, FFT_WIN_TYP_HANN, FFT_FORWARD);
-
-  FFT.Compute(data_I[filled], data_Q[filled], SAMPLE_MAX, FFT_FORWARD);
-
-  //FFT.ComplexToMagnitude(data_I[filled], data_Q[filled], SAMPLE_MAX);
-
-//    for(uint16_t i = 0; i < 128; i++)
-//  {
-//    Serial.print(uint16_t(data_I[filled][i]), DEC);
-//    Serial.print(",");
-//    Serial.println(uint16_t(data_Q[filled][i]), DEC);
-//  }
-
+  uint16_t rawIMax;
+  double zeroes[SAMPLE_MAX] = {};
+  double freqI;
+  arduinoFFT FFT = arduinoFFT();
   
-////  //**********Check on other MajorPeak function to possibly combine**************//
-  //FFT.MajorPeak(data_I[filled], SAMPLE_MAX, SAMPLING_FREQUENCY, rawImagMax);
-  return std::make_pair(FFT.MajorPeak(data_Q[filled], SAMPLE_MAX, SAMPLING_FREQUENCY, rawQMax),FFT.MajorPeak(data_I[filled], SAMPLE_MAX, SAMPLING_FREQUENCY, rawIMax) );
-
+  FFT.DCRemoval(data_I[filled], SAMPLE_MAX);
+  FFT.Windowing(data_I[filled], SAMPLE_MAX, FFT_WIN_TYP_WELCH, FFT_FORWARD);
+  FFT.Compute(data_I[filled], zeroes, SAMPLE_MAX, 9, FFT_FORWARD);
+  FFT.ComplexToMagnitude(data_I[filled], zeroes, SAMPLE_MAX);
+  freqI = FFT.MajorPeak(data_I[filled], SAMPLE_MAX, SAMPLING_FREQUENCY, rawIMax);
+  
+  if(rawIMax < 5)
+  {
+    return 0;
+  }
+  return freqI;
 }
 
 
@@ -50,7 +48,6 @@ std::pair<double, double> getPeakFreq(uint16_t & rawQMax, uint16_t & rawIMax, ui
   //Fd = 2 * v * cos(theta) *(Ft / c)
 //Uses conversion rate of:
   //1 m/s = 2.236936 mph
-//WILL NEED TO ACCOUNT FOR THETA
 double freqToMPH(double freq)
 {
   return (freq * double(0.011118)); 
@@ -72,28 +69,79 @@ double freqToLightTime(double freq)
   }
 
   double s = (double(1) / freqToMPS(freq)) * double(ROAD_DISTANCE);
-//  Serial.print(freqToMPS(freq));
-//  Serial.print('\t');
-//  Serial.println(s);
-  
-  return s;
+
+  if(s <= double(1))
+  {
+    return 1;
+  }
+
+  else
+  {
+    return round(s);
+  }
 }
 
-std::pair<double, double> dopplerFreq(uint8_t filled)
+
+uint32_t lightOnTime()
 {
-  uint16_t QMaxVal = 0;
-  uint16_t IMaxVal = 0;
-  std::pair<double, double> peakFreqs = getPeakFreq(QMaxVal, IMaxVal, filled);
-  
-  //check if amplitude at peak frequency is below movement threshold
-  //probably will need to adjust this value later
-//  if(IMaxVal < LOWEST_MAX_VAL)
-//  {
-//    return 0;
-//  }
-
-  return peakFreqs;
-  
+  return(uint32_t(freqToLightTime(getPeakFreq())));
 }
+
+
+//Checking for "Zero crossing" with 1.615 - 1.670 treated as the zero
+uint8_t getDirState(double current_reading)
+{
+  if(current_reading < 1.615)
+  {
+    return BELOW;  
+  }
+
+  else if ((current_reading >= 1.615) && (current_reading <= 1.670))
+  {
+    return WITHIN;
+  }
+
+  else
+  {
+    return ABOVE;
+  }
+}
+
+
+uint8_t getDirection()
+{
+  uint8_t Q_state;
+  uint8_t I_state;
+  uint8_t prev_Q_state = data_Q[filled][0];
+  uint8_t prev_I_state = data_I[filled][0];
+  uint8_t towards_count = 0;
+  uint8_t away_count = 0;
+  
+  for(uint16_t i = 1; i < SAMPLE_MAX; i++)
+  {
+    Q_state = getDirState(data_Q[filled][i]);
+    I_state = getDirState(data_I[filled][i]);
+
+    if(Q_state != I_state)
+    {
+      if((I_state != prev_I_state) && (++towards_count > REQUIRED_DIR_COUNT))
+      {
+          return TOWARDS;
+      }
+
+      else if ((Q_state != prev_Q_state) && (++away_count > REQUIRED_DIR_COUNT))
+      {
+          return AWAY;
+      }
+    }
+    
+    prev_Q_state = Q_state;
+    prev_I_state = I_state; 
+  }
+  
+  return NO_MOVEMENT;
+}
+
+
 
 #endif /* processing_h */
