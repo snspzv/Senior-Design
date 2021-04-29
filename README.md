@@ -4,31 +4,20 @@
     - Code for Arduino at the bottom of the hill that will detect cars. Basic functions include reading data from radar module, processing data to determine whether a car is
     approaching, and transmitting status to the Arduino at the top of the hill.
     - Setup
-      - Add arduinoFFT with Arduino library manager 
-        1. Delete arduinoFFT/src/arduinoFFT.h and replace it with [this file](libReplacements/arduinoFFT.h)
-        2. Delete arduinoFFT/src/arduinoFFT.cpp and replace it with [this file](libReplacements/arduinoFFT.cpp)
-      - Add RF24 with Arduino library manager
-    
+      1. Add arduinoFFT with Arduino library manager 
+         -Delete arduinoFFT/src/arduinoFFT.h and replace it with [this file](libReplacements/arduinoFFT.h)
+         -Delete arduinoFFT/src/arduinoFFT.cpp and replace it with [this file](libReplacements/arduinoFFT.cpp)
+         -[Documentation](https://github.com/kosme/arduinoFFT)
+      2. Add RF24 with Arduino library manager
+         -[Documentation](https://nrf24.github.io/RF24/classRF24.html)
+      3. Download [Teensyduino](https://www.pjrc.com/teensy/td_download.html)
+         -Set clock speed to 144 MHz 
   
   - Signal
     - Code for Arduino at the top of the hill. Basic functions include receiving status updates for Arduino at bottom of the hill and using that information to determine whether 
     it should signal that a car is approaching.
     - Setup
       1. Add RF24 with Arduino library manager
-      
-  
-  - Git
-    - To commit changes locally
-      - `git add "file1" "file2"`
-      - `git commit -m "description of changes"`
-    - To push to remote repo
-      - `git push`
-      
-  - RF24 Library Documentation: https://nrf24.github.io/RF24/classRF24.html
-  - RF24 Tutorial: https://howtomechatronics.com/tutorials/arduino/arduino-wireless-communication-nrf24l01-tutorial/
+         -[Documentation](https://nrf24.github.io/RF24/classRF24.html)
   
   - [Signal State Diagram](https://drive.google.com/file/d/1SXXWFQub_RAO9IWIOhbIvrC0gkTXHe1I/view?usp=sharing)
-
- - Teensy Software: https://www.pjrc.com/teensy/td_download.html
-  
-  
