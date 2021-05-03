@@ -20,36 +20,10 @@ extern volatile uint8_t buffer_status;
 
 //Starts both ADCs syncronized in continuous mode with interrupts
 //Sampling rate of 17.047 kHz (CPU clock of 144 MHz and ADCK of 24 MHz)
+//Sampling rate allows detection of speeds over 115 mph
 //Buffer size 512:
   //~31 ms to fill buffers
-  //~26 ms to do processing
-//Transmission time + processing < fill time
-/*Possible Combinations for sampling rate >= 15kHz (with averaging at 32 and resolution at 12 bit signle ended): 
- *    Conversion speed
- *        LOW_SPEED: 
- *            None
- *        MED_SPEED:
- *            Sampling speed:
- *              VERY_LOW_SPEED: ~4.7 kHz
- *              LOW_SPEED: ~5.9 kHz
- *              MED_SPEED: ~8.6 kHz 
- *              HIGH_SPEED: (~17.47 kHz with 16 samples)
- *              VERY_HIGH_SPEED: ~9.4 kHz
- *        HIGH_SPEED:
- *            Sampling speed:
- *                VERY_LOW_SPEED: ~17.9 kHz sampling rate
- *                LOW_SPEED: ~22.1 kHz sampling rate
- *                MED_SPEED: ~26.8 kHz sampling rate
- *                HIGH_SPEED: ~31.3 kHz sampling rate
- *                VERY_HIGH_SPEED: ~34.2 kHz sampling rate
- *        VERY_HIGH_SPEED:        
- *            Sampling speed:
- *                VERY_LOW_SPEED: ~35.8 kHz sampling rate
- *                LOW_SPEED: ~44.2 kHz sampling rate
- *                MED_SPEED: ~53.6 kHz sampling rate
- *                HIGH_SPEED: ~62.6 kHz sampling rate
- *                VERY_HIGH_SPEED: ~68.2 kHz sampling rate
- */
+  //~27 ms to do process and transmit
 void ADCInit()
 {
   pinMode(QPin, INPUT);

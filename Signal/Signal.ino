@@ -16,24 +16,15 @@ void setup() {
   Serial.begin(115200);
   sei();
   startRadioTimer();
-//        Serial.print("A: ");
-//      Serial.print(TCCR1A, HEX);
-//      Serial.print("\tB: ");
-//      Serial.println(TCCR1B, HEX);
 }
 
 void loop() {
   if(g_packetArrived)
   {
-//    EIMSK &= ~(1 << INT1); 
     if(g_state == LIGHT_BLINKING)
     {
       stopRadioTimer();
       startRadioTimer();
-//      Serial.print("A: ");
-//      Serial.print(TCCR1A, HEX);
-//      Serial.print("\tB: ");
-//      Serial.println(TCCR1B, HEX);
       g_state = LIGHT_OFF;
     }
 
@@ -48,7 +39,6 @@ void loop() {
     {      
       if(g_state == LIGHT_ON)
       {
-//        Serial.println("LIGHT_ON");
         lightOnSolid();
         restartLightTimer(timeOn);
       }
@@ -60,13 +50,5 @@ void loop() {
         g_state = LIGHT_ON;
       }
     }
-
-//    EIMSK |= (1 << INT1); 
   }
-//  lightOnSolid();
-//  delay(2000);
-//  lightOnSolid();
-//  startLightTimer(3);
-//  restartLightTimer(5);
-//  while(1);
 }

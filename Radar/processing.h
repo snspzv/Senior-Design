@@ -3,6 +3,10 @@
 
 #include "arduinoFFT.h" 
 
+/**************CHANGE THIS************/
+static const double ROAD_DISTANCE =  5; //Distance between stations in meters
+/*************************************/
+
 extern volatile double data_Q[2][512];
 extern volatile double data_I[2][512];
 extern volatile uint8_t filled;
@@ -10,14 +14,12 @@ extern uint16_t const SAMPLE_MAX;
 extern const uint8_t TOWARDS;
 extern const uint8_t AWAY;
 extern const uint8_t NO_MOVEMENT;
-static const uint16_t SAMPLING_FREQUENCY = 17047; //Hz
+static const uint16_t SAMPLING_FREQUENCY = 17047;
 static const uint8_t BELOW = 0;
 static const uint8_t WITHIN = 1;
 static const uint8_t ABOVE = 2;
 static const uint8_t REQUIRED_DIR_COUNT = 10;
-/****CHANGE THIS BACK FOR REAL USE****/
-static const double ROAD_DISTANCE =  5; //Distance between stations in meters
-/*************************************/
+
 
 double getPeakFreq()
 {

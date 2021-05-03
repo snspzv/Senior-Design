@@ -1,24 +1,23 @@
 #ifndef light_h
 #define light_h
 
-// Change control pin by changing value of RELAY
+//Important this pin is OC1A or radioTimer function to blink light will break
 const int RELAY = 9;
 
-// Setup funtion for relay control
 void lightInit()
 {
-  pinMode(RELAY, OUTPUT); // Set pin mode
-  digitalWrite(RELAY, LOW); // making sure that it is off
+  pinMode(RELAY, OUTPUT); 
+  digitalWrite(RELAY, LOW); 
 }
 
-void lightOnSolid() // Turns relay on
+void lightOnSolid() 
 {
-  digitalWrite(RELAY, HIGH); // Push 5 V to Pin 4
+  digitalWrite(RELAY, HIGH); 
 }
 
-void lightOff() // Turns relay off
+void lightOff() 
 {
-  digitalWrite(RELAY, LOW); // Push 0 V to Pin 4
+  digitalWrite(RELAY, LOW); 
 }
 
 #endif /* light_h */
