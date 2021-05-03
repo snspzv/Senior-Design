@@ -37,4 +37,4 @@ at bottom of the hill and using that information to determine whether it should 
 2. Add RF24 with Arduino library manager
    - [Documentation](https://nrf24.github.io/RF24/classRF24.html)
 2. Before uploading code to the Nano in the Arduino IDE, take the following steps:
-   1. Under Tools > Boards > Arduino AVR Boards, select Arduino Nano 
+   - Under Tools > Boards > Arduino AVR Boards, select Arduino Nano 
